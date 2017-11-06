@@ -13,7 +13,7 @@ dht DHT;
 RF24 radio(9, 10);
 const uint64_t pipes[4] = { 0xF0F0F0F0E1LL, 0xF0F0F0F0E2LL, 0xF0F0F0F0E3LL, 0xF0F0F0F0E4LL };
 
-// The sizeof this struct should not exceed 32 bytes
+// The size of this struct should not exceed 32 bytes
 struct sensorData3 {
   float temp3;
   float humidity3;
@@ -40,13 +40,12 @@ void setup()
     radio.begin();
     radio.setAutoAck(false);
     radio.setDataRate(RF24_250KBPS);
-   //radio.setRetries(15, 15);
     radio.openWritingPipe(pipes[3]);
     radio.startListening();
     radio.printDetails();
     Serial.println("Type,\tstatus,\tHumidity (%),\tTemperature (C)\tTime (us)");
 
-    // disable analog to digital conversion (ADC) to drop power consumption
+     // Disable analog to digital conversion (ADC) to drop power consumption
      ADCSRA = 0;
      power_adc_disable(); // ADC converter
      power_timer1_disable();// Timer 1
@@ -86,13 +85,13 @@ void loop()
     case DHTLIB_ERROR_ACK_H:
         stat.ack_h++;
         Serial.print("Ack High error,\t");
-        break;  
+        break;
     default:
         stat.unknown++;
         Serial.print("Unknown error,\t");
         break;
     }
-    // DISPLAY DATA
+    // Display data to serial monitor.
     Serial.print(DHT.humidity, 1);
     Serial.print(",\t");
     Serial.print(DHT.temperature, 1);
@@ -102,19 +101,14 @@ void loop()
 
     data3.temp3 = DHT.temperature;
     data3.humidity3 = DHT.humidity;
-    
+
     if (radio.write(&data3, sizeof(sensorData3))) {
 
-      delay(10);
-   /*CLKPR = 0x80; // lager rare tall når den våkner opp igjen for å sende neste runde med data?
-   CLKPR = 0x04;*/
+   delay(10);
    ADCSRA = 0;  // disable ADC
    radio.powerDown();
   // power_all_disable ();   // turn off all modules
-   for(int i=0;i<53;i++) //37 = 5min
+   for(int i=0;i<53;i++) //(53 * 8) / 60 = 7.06 minutes
     LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);
     }
-    
-    
 }
-
