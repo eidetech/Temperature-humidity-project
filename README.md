@@ -5,9 +5,15 @@ All TX's have their own id, and send data to the RX when they wake up every 7 mi
 
 Libraries used:
 #include <dht.h>
+
 #include <SPI.h>
+
 #include "nRF24L01.h"
+
 #include "RF24.h"
+
 #include "printf.h"
+
 #include <avr/power.h>
+
 #include "LowPower.h"
