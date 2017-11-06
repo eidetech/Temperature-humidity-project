@@ -4,6 +4,7 @@ Temperature and humidity measuring project for our cottage. Three sender modules
 All TX's have their own id, and send data to the RX when they wake up every 7 minutes (for now). The RX will know which TX is which by it's id, and display the received data on a TFT screen.
 
 Libraries used:
+
 #include <dht.h>
 
 #include <SPI.h>
