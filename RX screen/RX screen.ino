@@ -22,13 +22,14 @@ unsigned long drops = 0;
 
 float temp1, temp2, temp3, temp1_old, temp2_old, temp3_old, test, test2, test3;
 float humidity1, humidity2, humidity3;
+byte id = 0;
 
 /*************************************************************************/
 
 RF24 radio(7, 8);
 const uint64_t pipes[4] = { 0xF0F0F0F0E1LL, 0xF0F0F0F0E2LL, 0xF0F0F0F0E3LL, 0xF0F0F0F0E4LL };
 
-// The sizeof this struct should not exceed 32 bytes
+// The size of this struct should not exceed 32 bytes
 struct sensorData1 {
   float temp1;
   float humidity1;
@@ -56,11 +57,11 @@ void printUI() {
   tft.setTextColor(TFT_DARKGREY, TFT_BLACK);
   tft.setFreeFont(FSS12);
 
-  /*OVERSKRIFT*/
+  /*Header*/
   tft.drawString("Temperatur & fuktighetssensor", 80, 20, GFXFF);
   tft.drawLine(1, 50, 600, 50, TFT_ORANGE);
 
-  /*HEADERS*/
+  /*Sub headers*/
   tft.setFreeFont(FSS12);
   tft.drawString("Sensor", 20, 60, GFXFF);
   tft.drawLine(1, 85, 600, 85, TFT_ORANGE);
@@ -104,10 +105,7 @@ void loop() {
 
   unsigned long time_now = millis();
 
-  /*SENSOR*/
   tft.setFreeFont(FSS12);
-
-  byte id = 0;
 
   //delay(500);
    Serial.println("Time now:");
