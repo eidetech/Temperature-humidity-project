@@ -55,30 +55,30 @@ void printUI() {
   tft.fillScreen(TFT_BLACK);
   tft.setTextColor(TFT_DARKGREY, TFT_BLACK);
   tft.setFreeFont(FSS12);
-  
+
   /*OVERSKRIFT*/
   tft.drawString("Temperatur & fuktighetssensor", 80, 20, GFXFF);
   tft.drawLine(1, 50, 600, 50, TFT_ORANGE);
-  
+
   /*HEADERS*/
   tft.setFreeFont(FSS12);
   tft.drawString("Sensor", 20, 60, GFXFF);
   tft.drawLine(1, 85, 600, 85, TFT_ORANGE);
   tft.drawString("Temperatur", 160, 60, GFXFF);
   tft.drawString("Luftfuktighet  ", 330, 60, GFXFF);
-  
+
   tft.drawString("Sensor 1", 20, 100, GFXFF);
   tft.drawString("Sensor 2", 20, 143, GFXFF);
   tft.drawString("Sensor 3", 20, 185, GFXFF);
   }
 
 /*************************************************************************/
-  
+
 void setup(void) {
   tft.begin();
   tft.setRotation(1);
   printUI();
-  
+
   Serial.begin(9600);
   printf_begin();
   radio.begin();
@@ -97,16 +97,16 @@ void setup(void) {
   unsigned long lastReceive_1 = 0;
   unsigned long lastReceive_2 = 0;
   unsigned long lastReceive_3 = 0;
-  
+
 /*************************************************************************/
 
 void loop() {
 
   unsigned long time_now = millis();
-  
+
   /*SENSORER*/
   tft.setFreeFont(FSS12);
-  
+
   byte id = 0;
 
   //delay(500);
@@ -131,7 +131,7 @@ void loop() {
    Serial.println(test3);
    Serial.println("");
 
-   
+
   /* SENSOR 1 - check if still receiving data */
   if (time_now - lastReceive_1 > 900000 ) { //Verdien her er det som bestemmer om skjermen ikke lenger viser siste verdi den fikk.
   tft.fillRect(220,100,120,40,TFT_BLACK);
@@ -142,7 +142,7 @@ void loop() {
   }
 
   /* SENSOR 2 - check if still receiving data */
-  if (time_now - lastReceive_2 > 900000 ) { 
+  if (time_now - lastReceive_2 > 900000 ) {
   tft.fillRect(220,143,120,40,TFT_BLACK);
   tft.drawString("---", 220, 143, GFXFF);
   tft.fillRect(380,143,120,40,TFT_BLACK);
@@ -158,7 +158,7 @@ void loop() {
   tft.drawString("---", 380, 185, GFXFF);
   Serial.println("Sensor 3 off");
   }
-  
+
   /* CHECK IF RADIOS ARE AVAILABLE */
   if (radio.available(&id)) {
 
@@ -246,7 +246,7 @@ void loop() {
   state_3 = true;
   }else{
   lastReceive_3 = millis();
- 
+
   if (id == 3) {
     //delay(50);
     radio.read(&temp3, sizeof(temp3));
@@ -254,7 +254,7 @@ void loop() {
       tft.fillRect(220,185,120,40,TFT_BLACK);
       tft.drawFloat(temp3, 1, 220, 185, GFXFF);
       tft.drawString("256%", 410, 185, GFXFF);
-    
+
     Serial.println("Sensor 3:");
     Serial.println(temp3);
     temp3_old = temp3;
@@ -263,7 +263,7 @@ void loop() {
   }
   }
 */
-  
+
 }else{
  // Serial.println("No radios available.");
 }
