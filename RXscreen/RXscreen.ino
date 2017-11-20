@@ -11,7 +11,7 @@ TFT_HX8357 tft = TFT_HX8357();       // Invoke custom library
 unsigned long drawTime = 0;
 
 /*************************************************************************/
-test
+
 unsigned long packetsRead = 0;
 unsigned long lastUpdate = 0;
 int packetsSec = 0;
@@ -22,6 +22,7 @@ unsigned long drops = 0;
 
 float temp1, temp2, temp3, temp1_old, temp2_old, temp3_old, test, test2, test3;
 float humidity1, humidity2, humidity3;
+int adjustHum1, adjustHum2, adjustHum3;
 byte id = 0;
 
 /*************************************************************************/
@@ -91,6 +92,14 @@ void setup(void) {
   radio.startListening();
   radio.printDetails();
   delay(1000);
+
+  /*************************************************************************/
+  /* Fine adjustment of humidity values shown on screen */
+
+  adjustHum1 = 1;
+  adjustHum2 = 0;
+  adjustHum3 = 4;
+
 }
 
 /*************************************************************************/
@@ -165,7 +174,7 @@ void loop() {
   if (id == 1) {
     radio.read(&data1, sizeof(sensorData1));
     lastReceive_1 = time_now;
-    int sensorHum_1 = data1.humidity1;
+    int sensorHum_1 = data1.humidity1-adjustHum1;
     int sensorTemp_1 = data1.temp1;
 
       tft.fillRect(220,100,120,40,TFT_BLACK);
@@ -182,7 +191,7 @@ void loop() {
   if (id == 2) {
     radio.read(&data2, sizeof(sensorData2));
     lastReceive_2 = time_now;
-    int sensorHum_2 = data2.humidity2;
+    int sensorHum_2 = data2.humidity2-adjustHum2;
     int sensorTemp_2 = data2.temp2;
 
       tft.fillRect(220,143,120,40,TFT_BLACK);
@@ -200,7 +209,7 @@ void loop() {
 
     radio.read(&data3, sizeof(sensorData3));
     lastReceive_3 = time_now;
-    int sensorHum_3 = data3.humidity3;
+    int sensorHum_3 = data3.humidity3-adjustHum3;
     int sensorTemp_3 = data3.temp3;
 
       tft.fillRect(220,185,120,40,TFT_BLACK);
