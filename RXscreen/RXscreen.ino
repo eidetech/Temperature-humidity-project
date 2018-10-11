@@ -7,11 +7,6 @@
 
 /*************************************************************************/
 
-TFT_HX8357 tft = TFT_HX8357();       // Invoke custom library
-unsigned long drawTime = 0;
-
-/*************************************************************************/
-
 unsigned long packetsRead = 0;
 unsigned long lastUpdate = 0;
 int packetsSec = 0;
@@ -51,34 +46,7 @@ sensorData3 data3;
 
 /*************************************************************************/
 
-//Prints the UI once
-void printUI() {
-  tft.fillScreen(TFT_BLACK);
-  tft.setTextColor(TFT_DARKGREY, TFT_BLACK);
-  tft.setFreeFont(FSS12);
-
-  /*Header*/
-  tft.drawString("Temperatur & fuktighetssensor", 80, 20, GFXFF);
-  tft.drawLine(1, 50, 600, 50, TFT_ORANGE);
-
-  /*Sub headers*/
-  tft.setFreeFont(FSS12);
-  tft.drawString("Sensor", 20, 60, GFXFF);
-  tft.drawLine(1, 85, 600, 85, TFT_ORANGE);
-  tft.drawString("Temperatur", 160, 60, GFXFF);
-  tft.drawString("Luftfuktighet  ", 330, 60, GFXFF);
-
-  tft.drawString("Sensor 1", 20, 100, GFXFF);
-  tft.drawString("Sensor 2", 20, 143, GFXFF);
-  tft.drawString("Sensor 3", 20, 185, GFXFF);
-  }
-
-/*************************************************************************/
-
 void setup(void) {
-  tft.begin();
-  tft.setRotation(1);
-  printUI();
 
   Serial.begin(9600);
   printf_begin();
@@ -105,7 +73,6 @@ void loop() {
 
   unsigned long time_now = millis();
 
-  tft.setFreeFont(FSS12);
 
   //delay(500);
    Serial.println("Time now:");
@@ -130,120 +97,4 @@ void loop() {
    Serial.println("");
 
 
-  /* SENSOR 1 - check if still receiving data */
-  if (time_now - lastReceive_1 > 900000 ) { //This value will determine if a new value have been received within set time.
-  tft.fillRect(220,100,120,40,TFT_BLACK);
-  tft.drawString("---", 220, 100, GFXFF);
-  tft.fillRect(380,100,120,40,TFT_BLACK);
-  tft.drawString("---", 380, 100, GFXFF);
-  Serial.println("Sensor 1 off");
-  }
-
-  /* SENSOR 2 - check if still receiving data */
-  if (time_now - lastReceive_2 > 900000 ) { //This value will determine if a new value have been received within set time.
-  tft.fillRect(220,143,120,40,TFT_BLACK);
-  tft.drawString("---", 220, 143, GFXFF);
-  tft.fillRect(380,143,120,40,TFT_BLACK);
-  tft.drawString("---", 380, 143, GFXFF);
-  Serial.println("Sensor 2 off");
-  }
-
-  /* SENSOR 3 - check if still receiving data */
-  if (time_now - lastReceive_3 > 900000 ) { //This value will determine if a new value have been received within set time.
-  tft.fillRect(220,185,120,40,TFT_BLACK);
-  tft.drawString("---", 220, 185, GFXFF);
-  tft.fillRect(380,185,120,40,TFT_BLACK);
-  tft.drawString("---", 380, 185, GFXFF);
-  Serial.println("Sensor 3 off");
-  }
-
-  /* CHECK IF RADIOS ARE AVAILABLE */
-  if (radio.available(&id)) {
-
-
-  /*SENSOR 1 - display data and update last receive variable*/
-  if (id == 1) {
-    radio.read(&data1, sizeof(sensorData1));
-    lastReceive_1 = time_now;
-    int sensorHum_1 = data1.humidity1;
-    int sensorTemp_1 = data1.temp1;
-
-      tft.fillRect(220,100,120,40,TFT_BLACK);
-      tft.drawFloat(sensorTemp_1, 1, 220, 100, GFXFF);
-      tft.drawString("C", 270, 100, GFXFF);
-      tft.fillRect(380,100,120,40,TFT_BLACK);
-      tft.drawFloat(sensorHum_1, 1, 380, 100, GFXFF);
-      tft.drawString("%", 430, 100, GFXFF);
-      Serial.println("Sensor 1:");
-      Serial.println(data1.temp1);
-  }
-
-/*SENSOR 2 - display data and update last receive variable*/
-  if (id == 2) {
-    radio.read(&data2, sizeof(sensorData2));
-    lastReceive_2 = time_now;
-    int sensorHum_2 = data2.humidity2;
-    int sensorTemp_2 = data2.temp2;
-
-      tft.fillRect(220,143,120,40,TFT_BLACK);
-      tft.drawFloat(sensorTemp_2, 1, 220, 143, GFXFF);
-      tft.drawString("C", 270, 143, GFXFF);
-      tft.fillRect(380,143,120,40,TFT_BLACK);
-      tft.drawFloat(sensorHum_2, 1, 380, 143, GFXFF);
-      tft.drawString("%", 430, 143, GFXFF);
-      Serial.println("Sensor 2:");
-      Serial.println(data2.temp2);
-  }
-
-/*SENSOR 3 - display data and update last receive variable*/
-  if (id == 3) {
-
-    radio.read(&data3, sizeof(sensorData3));
-    lastReceive_3 = time_now;
-    int sensorHum_3 = data3.humidity3;
-    int sensorTemp_3 = data3.temp3;
-
-      tft.fillRect(220,185,120,40,TFT_BLACK);
-      tft.drawFloat(sensorTemp_3, 1, 220, 185, GFXFF);
-      tft.drawString("C", 270, 185, GFXFF);
-      tft.fillRect(380,185,120,40,TFT_BLACK);
-      tft.drawFloat(sensorHum_3, 1, 380, 185, GFXFF);
-      tft.drawString("%", 430, 185, GFXFF);
-      Serial.println("Sensor 3:");
-      Serial.println(data3.temp3);
-  }
-
-
-}else{
- // Serial.println("No radios available."); //Uncomment this line if nRF24L01 debugging is required.
 }
-delay(250);
-}
-
-#ifndef LOAD_GLCD
-//ERROR_Please_enable_LOAD_GLCD_in_User_Setup
-#endif
-
-#ifndef LOAD_FONT2
-//ERROR_Please_enable_LOAD_FONT2_in_User_Setup!
-#endif
-
-#ifndef LOAD_FONT4
-//ERROR_Please_enable_LOAD_FONT4_in_User_Setup!
-#endif
-
-#ifndef LOAD_FONT6
-//ERROR_Please_enable_LOAD_FONT6_in_User_Setup!
-#endif
-
-#ifndef LOAD_FONT7
-//ERROR_Please_enable_LOAD_FONT7_in_User_Setup!
-#endif
-
-#ifndef LOAD_FONT8
-//ERROR_Please_enable_LOAD_FONT8_in_User_Setup!
-#endif
-
-#ifndef LOAD_GFXFF
-ERROR_Please_enable_LOAD_GFXFF_in_User_Setup!
-#endif
