@@ -1,4 +1,4 @@
-#include <TFT_HX8357.h> // Hardware-specific library
+
 #include <SPI.h>
 #include <nRF24L01.h>
 #include <RF24.h>
